@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated HTML</title>
+    <style>
+        body {
+            background-color: lightblue;
+            position: relative; /* Needed for button positioning */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative; /* Ensure relative positioning within the body */
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            background-color: white; /* Set background to white */
+        }
+        th {
+            background-color: lightgray;
+        }
+        .circle {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .gray-background {
+            background-color: lightgray;
+        }
+        .key-container {
+            margin-top: 20px;
+        }
+        .key-table {
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        .key-th, .key-td {
+            padding: 5px;
+        }
+        .toggle-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: lightgray;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .page-footer {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 50px; /* Ensure space below for button */
+        }
+        .question-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 10px;
+        }
+        .answer-option {
+            margin-top: 5px;
+        }
+        img {
+            max-width: 500px;
+            max-height: 500px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        p {
+            margin-left: 150px;
+        }
+        strong {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="page1" class="container">
+        <h1 class="title">Generated HTML Page</h1>
+        <h2 class="subtitle">Table of Standard Data</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Standard ID</th>
+                    <th>Circle Color</th>
+                    <th>Formative Questions</th>
+                    <th>Correct Options Selected</th>
+                    <th>Incorrect Options Selected</th>
+                    <th>Points Earned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                <tr {% if row[6] == 'gray' %} class="gray-background" {% endif %}>
+                    <td>{{ row[0] }}</td>
+                    <td><div class="circle" style="background-color:{{ row[1] }}"></div></td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                    <td>{{ row[4] }}</td>
+                    <td>{{ row[5] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="key-container">
+            <h2>Key:</h2>
+            <table class="key-table">
+                <tr>
+                    <th>Color</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td style="background-color: purple;"></td>
+                    <td>Prepared for a 5</td>
+                </tr>
+                <tr>
+                    <td style="background-color: green;"></td>
+                    <td>Prepared for a 4</td>
+                </tr>
+                <tr>
+                    <td style="background-color: yellow;"></td>
+                    <td>Prepared for a 3</td>
+                </tr>
+                <tr>
+                    <td style="background-color: red;"></td>
+                    <td>Unprepared</td>
+                </tr>
+                <tr>
+                    <td style="background-color: gray;"></td>
+                    <td>Not Enough Data</td>
+                </tr>
+            </table>
+        </div>
+        
+        {% if string_list %}
+        <div class="page-footer">
+            <h2>List of Strings:</h2>
+            {% for string in string_list %}
+                <p>{{ string }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <button class="toggle-button" onclick="togglePage()">Toggle Page</button>
+    </div>
+    <div id="page2" style="display:none;">
+        <h1 class="title">Questions wrong</h1>
+        <h2 class="subtitle">fkjwefn</h2>
+
+        {% for question in questionList %}
+            <!-- Render question content dynamically -->
+            {% if question['image_paths'] is not none %}
+                {% for path in question['image_paths'] %}
+                    <img src="{{ path }}" alt="Image">
+                {% endfor %}
+            {% endif %}
+            {% if question['stimulus_text'] is not none %}
+                <p>{{ question['stimulus_text'] }}</p>
+            {% endif %}
+            <p class="question">{{ question['question_stem'] }}</p>
+            {% for option_key, option_value in question.items() %}
+                {% if option_key.startswith('option_') %}
+                    <p class="answer-option">
+                        Answer Option {{ option_key[-1] }}: 
+                        {% if option_value['correct'] %}
+                            <strong>{{ option_value['content'] }}</strong>
+                        {% else %}
+                            {{ option_value['content'] }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            {% endfor %}
+            <hr>
+        {% endfor %}
+        <button class="toggle-button" onclick="togglePage()">Toggle Page</button>
+    </div>
+
+    <script>
+        var selectedUnit = "all"; // Default value for selected unit
+
+        function togglePage() {
+            var page1 = document.getElementById('page1');
+            var page2 = document.getElementById('page2');
+            
+            if (page1.style.display === 'block') {
+                page1.style.display = 'none';
+                page2.style.display = 'block';
+            } else {
+                page1.style.display = 'block';
+                page2.style.display = 'none';
+            }
+        }
+
+        function filterQuestions() {
+            selectedUnit = document.getElementById('unit-selection').value;
+            var questions = document.querySelectorAll('.question-container');
+            
+            questions.forEach(function(question) {
+                var unitName = question.getAttribute('data-unit-name');
+                if (selectedUnit === 'all' || unitName === selectedUnit) {
+                    question.style.display = 'block';
+                } else {
+                    question.style.display = 'none';
+                }
+            });
+        }
+    </script>
+    
+
+</body>
+</html>
